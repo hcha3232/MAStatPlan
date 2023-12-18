@@ -15,15 +15,22 @@ To predict individual's visual acuity in logMAR, based on lesion area (LA) and t
 
 Visual acuity in logMAR 
 
+![image](https://github.com/hcha3232/MAStatPlan/assets/130141508/f07125a5-1028-47ef-a7aa-bb4c31fc30a9)
+
+
+
 ### Fixed effects 
 
-Lesion area - To account for its impact on visual acuity
+Lesion area - To account for its impact on visual acuity <br><br>
+![image](https://github.com/hcha3232/MAStatPlan/assets/130141508/1e350ce0-8b48-4287-8ff5-2638817c87e2)
+<br>
+
 Time from baseline - To account for the change of visual acuity over time 
   - I am confused whether I should put time as fixed effect variable, or just leave lesion area solely.
 
 ### Random effects
 
-Baseline visual acuity 
+Individual baseline visual acuity 
 
 ## Model 
 
@@ -47,6 +54,8 @@ Where
 * β1, β2 = fixed effect coefficients for lesion area and time from baseline, respectively 
 * ui = random effects for each patient variations (baseline visual acuity)
 * ϵij = residual error
+<br>
+* I am only accounting for random intercept not random slope, which could be beneficial to account for individual's varying trajectory of visual acuity 
 
 ## Sample data
 
@@ -72,9 +81,34 @@ Where
 
 ## Fitting of the model 
 
+```py
+import statsmodels.api as sm
+from statsmodels.regression.mixed_linear_model import MixedLM
+
+# Preparing data for the mixed-effects model
+X_mixed = train_data[['DaysFromBaseline', 'LesionArea']]
+X_mixed = sm.add_constant(X_mixed)
+y_mixed = train_data['VisualAcuity_logMAR']
+
+# Group variable for random effects (each patient is a group)
+groups = train_data['PatientID']
+
+# Fitting the mixed-effects model
+mixed_model = MixedLM(y_mixed, X_mixed, groups=groups).fit()
+```
+
 ## Prediction with test data 
 
+```py
+# Preparing the test data for prediction
+X_test = test_data[['DaysFromBaseline', 'LesionArea']]
+X_test = sm.add_constant(X_test)
 
+# Predicting using the mixed-effects model (fixed effects only)
+test_data['PredictedVisualAcuity'] = mixed_model.predict(X_test)
+```
+
+![alt text](https://github.com/hcha3232/MAStatPlan/blob/main/Figure_1.png?raw=true)
 
 
 
