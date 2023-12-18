@@ -110,6 +110,10 @@ test_data['PredictedVisualAcuity'] = mixed_model.predict(X_test)
 
 ![alt text](https://github.com/hcha3232/MAStatPlan/blob/main/Figure_1.png?raw=true)
 
+<br>
+
+### Limitation 
+
 
 
 
