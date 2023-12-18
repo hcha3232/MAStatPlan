@@ -27,6 +27,9 @@ Lesion area - To account for its impact on visual acuity <br><br>
 
 Time from baseline - To account for the change of visual acuity over time 
   - I am confused whether I should put time as fixed effect variable, or just leave lesion area solely.
+<br>
+
+Baseline Area
 
 ### Random effects
 
@@ -45,13 +48,13 @@ Linear mixed-effects model
 
 ## Linear mixed effects model 
 
-* Visual Acuityij = β0 + β1 × LesionAreaij + β2 × Timeij +ui + ϵij
+* Visual Acuityij = β0 + β1 × LesionAreaij + β2 × BaselineAreaij + β3 × Timeij + ui + ϵij
 
 Where
 
 * Visual Acuityij = logMAR Visual acuity of patient i at time j
 * β0 = intercept
-* β1, β2 = fixed effect coefficients for lesion area and time from baseline, respectively 
+* β1, β2, β3 = fixed effect coefficients for lesion area, baseline area and time from baseline, respectively 
 * ui = random effects for each patient variations (baseline visual acuity)
 * ϵij = residual error
 <br>
@@ -101,14 +104,14 @@ mixed_model = MixedLM(y_mixed, X_mixed, groups=groups).fit()
 
 ```py
 # Preparing the test data for prediction
-X_test = test_data[['DaysFromBaseline', 'LesionArea']]
+X_test = test_data[['DaysFromBaseline', 'LesionArea', 'BaselineArea']]
 X_test = sm.add_constant(X_test)
 
 # Predicting using the mixed-effects model (fixed effects only)
 test_data['PredictedVisualAcuity'] = mixed_model.predict(X_test)
 ```
 
-![alt text](https://github.com/hcha3232/MAStatPlan/blob/main/Figure_1.png?raw=true)
+![alt text](https://github.com/hcha3232/MAStatPlan/blob/main/Figure_2.png?raw=true)
 
 <br>
 
